@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "../styles/welcomepagestyle.dart";
 
 class Welcomepage extends StatelessWidget {
   const Welcomepage({super.key});
@@ -6,7 +7,7 @@ class Welcomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8FCFC),
+      backgroundColor: WelcomePageColors.background,
       body: SafeArea(
         child: Stack(
           children: [
@@ -18,65 +19,32 @@ class Welcomepage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
-                      "WELCOME TO SIGNA2Z",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1f3c88),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    const Text("WELCOME TO SIGNA2Z",
+                        style: WelcomePageTextStyles.heading,
+                        textAlign: TextAlign.center),
                     const SizedBox(height: 1),
-                    const Text(
-                      "Bridging the gap between the",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    const Text("Bridging the gap between the",
+                        style: WelcomePageTextStyles.subtitle,
+                        textAlign: TextAlign.center),
                     const SizedBox(height: 1),
-                    const Text(
-                      "Deaf and hearing.",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    const Text("Deaf and hearing.",
+                        style: WelcomePageTextStyles.subtitle,
+                        textAlign: TextAlign.center),
                     const SizedBox(height: 90),
-                    Image.asset(
-                      "assets/images/app_logo.png",
-                      width: 210,
-                      height: 105,
-                      fit: BoxFit.contain,
-                    ),
+                    Image.asset("assets/images/app_logo.png",
+                        width: 210, height: 105, fit: BoxFit.contain),
                     const SizedBox(height: 120),
 
                     // SIGN UP button
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1f75fe),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
+                        style: WelcomePageButtonStyles.roundedBlue,
                         onPressed: () {
                           Navigator.pushNamed(context, "/signup");
                         },
-                        child: const Text(
-                          "SIGN UP",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87),
-                        ),
+                        child: const Text("SIGN UP",
+                            style: WelcomePageTextStyles.button),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -85,23 +53,12 @@ class Welcomepage extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1f75fe),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
+                        style: WelcomePageButtonStyles.roundedBlue,
                         onPressed: () {
                           Navigator.pushNamed(context, "/login");
                         },
-                        child: const Text(
-                          "LOG IN",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87),
-                        ),
+                        child: const Text("LOG IN",
+                            style: WelcomePageTextStyles.button),
                       ),
                     ),
                     const SizedBox(height: 16),
