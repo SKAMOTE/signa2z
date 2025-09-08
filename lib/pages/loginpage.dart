@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFE8FCFC),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40),
@@ -79,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
               const TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Color(0xFFF2F2F2), // 👈 light grey background
                 ),
               ),
 
@@ -97,6 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Color(0xFFF2F2F2), // 👈 light grey background
                 ),
               ),
 
@@ -138,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     side: const BorderSide(color: Colors.grey),
                     shape: RoundedRectangleBorder(

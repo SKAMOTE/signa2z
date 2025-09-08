@@ -1,9 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/custom_navbar.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  CameraController? _cameraController;
+  bool _isCameraInitialized = false;
+  bool _isCameraOn = false;
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      final cameras = await availableCameras();
+      final firstCamera = cameras.first;
+
+      _cameraController = CameraController(
+        firstCamera,
+        ResolutionPreset.medium,
+      );
+
+      await _cameraController!.initialize();
+      if (!mounted) return;
+
+      setState(() {
+        _isCameraInitialized = true;
+        _isCameraOn = true;
+      });
+    } catch (e) {
+      debugPrint("Camera init error: $e");
+    }
+  }
+
+  void _toggleCamera() {
+    if (_isCameraOn) {
+      // turn OFF
+      _cameraController?.dispose();
+      _cameraController = null;
+      setState(() {
+        _isCameraInitialized = false;
+        _isCameraOn = false;
+      });
+    } else {
+      // turn ON
+      _initCamera();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +83,7 @@ class Homepage extends StatelessWidget {
                   ),
                 ),
 
-                // Camera Container
+                // Camera Container with zigzag + borders
                 Container(
                   width: double.infinity,
                   height: 220,
@@ -49,38 +102,39 @@ class Homepage extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: const BoxDecoration(
                       color: Color.fromRGBO(76, 77, 76, 0.882),
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/camera_bg.png"),
-                        fit: BoxFit.cover,
-                      ),
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.photo_camera_outlined,
-                        size: 60,
-                        color: Colors.white70,
-                      ),
-                    ),
+                    child: _isCameraOn && _isCameraInitialized
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CameraPreview(_cameraController!),
+                          )
+                        : const Center(
+                            child: Icon(
+                              Icons.photo_camera_outlined,
+                              size: 60,
+                              color: Colors.white70,
+                            ),
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 10),
 
-                // Start Button
+                // Start/Stop Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () {},
-                  child: const Text(
-                    "Start",
-                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  onPressed: _toggleCamera,
+                  child: Text(
+                    _isCameraOn ? "Stop" : "Start",
+                    style: const TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/notificationpage.dart'; // 👈 import your notification page
+import '../pages/settingpage.dart';   // 👈 import your settings page
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String username;
@@ -67,7 +68,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
           onSelected: (value) {
             if (value == 1) {
-              // TODO: Navigate to Settings
+              // ✅ Navigate to Settings Page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingPage(),
+                ),
+              );
             } else if (value == 2) {
               // TODO: Navigate to Theme
             } else if (value == 3) {

@@ -13,7 +13,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFE8FCFC),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40),
@@ -71,6 +71,7 @@ class _SignupPageState extends State<SignupPage> {
                 width: double.infinity, // 👈 full width
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     side: const BorderSide(color: Colors.grey),
                     shape: RoundedRectangleBorder(
@@ -118,6 +119,8 @@ class _SignupPageState extends State<SignupPage> {
               const TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
                 ),
               ),
               const SizedBox(height: 20),
@@ -134,6 +137,8 @@ class _SignupPageState extends State<SignupPage> {
               const TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
                 ),
               ),
               const SizedBox(height: 20),
@@ -151,6 +156,8 @@ class _SignupPageState extends State<SignupPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
                 ),
               ),
 
