@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:signa2z/pages/homepage.dart'; // 👈 make sure you have this file in /pages
+import 'package:signa2z/pages/homepage.dart';
+import '../styles/loginpagestyle.dart'; // 👈 import styles
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,29 +15,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8FCFC),
+      backgroundColor: LoginPageStyles.backgroundColor,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40),
+          padding: LoginPageStyles.pagePadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo
+              // 🔹 Logo
               Center(
                 child: Column(
                   children: [
                     Image.asset(
-                      "assets/images/app_logo.png", // 👈 your logo
+                      "assets/images/app_logo.png",
                       height: 120,
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       "Real-Time ASL Translation App",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.red,
-                        fontStyle: FontStyle.italic,
-                      ),
+                      style: LoginPageStyles.subtitleText,
                     ),
                   ],
                 ),
@@ -44,55 +41,42 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 40),
 
-              // Title
-              const Align(
+              // 🔹 Title
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1f3c88),
-                  ),
-                ),
+                child: Text("Login", style: LoginPageStyles.titleText),
               ),
               const SizedBox(height: 8),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Please login to continue.",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
+                child: Text("Please login to continue.",
+                    style: LoginPageStyles.hintText),
               ),
 
               const SizedBox(height: 30),
 
-              // Email
-              const Align(
+              // 🔹 Email
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Email or Username",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                child: Text("Email or Username",
+                    style: LoginPageStyles.labelText),
               ),
               const SizedBox(height: 6),
               const TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
-                  fillColor: Color(0xFFF2F2F2), // 👈 light grey background
+                  fillColor: Color(0xFFF2F2F2),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // Password
-              const Align(
+              // 🔹 Password
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Password",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                child:
+                    Text("Password", style: LoginPageStyles.labelText),
               ),
               const SizedBox(height: 6),
               const TextField(
@@ -100,13 +84,13 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
-                  fillColor: Color(0xFFF2F2F2), // 👈 light grey background
+                  fillColor: Color(0xFFF2F2F2),
                 ),
               ),
 
               const SizedBox(height: 10),
 
-              // Remember Me
+              // 🔹 Remember Me
               Row(
                 children: [
                   Checkbox(
@@ -123,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 10),
 
-              // Divider with OR
+              // 🔹 Divider
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1)),
@@ -137,44 +121,29 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 20),
 
-              // Google Button
+              // 🔹 Google Button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: const BorderSide(color: Colors.grey),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
+                  style: LoginPageStyles.googleButton,
                   onPressed: () {},
                   icon: Image.asset(
-                    "assets/images/google_logo.png", // 👈 google logo
+                    "assets/images/google_logo.png",
                     width: 24,
                     height: 24,
                   ),
-                  label: const Text(
-                    "Sign in with Google",
-                    style: TextStyle(color: Colors.black87, fontSize: 14),
-                  ),
+                  label: const Text("Sign in with Google",
+                      style: TextStyle(color: Colors.black87, fontSize: 14)),
                 ),
               ),
 
               const SizedBox(height: 25),
 
-              // ✅ Login button -> Homepage
+              // 🔹 Login button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
+                  style: LoginPageStyles.loginButton,
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
@@ -192,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 15),
 
-              // Forgot Password
+              // 🔹 Forgot Password
               TextButton(
                 onPressed: () {},
                 child: const Text(
@@ -203,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 10),
 
-              // Signup link
+              // 🔹 Signup link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

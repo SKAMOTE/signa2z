@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../styles/signuppagestyle.dart'; // 👈 import styles
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -13,74 +14,52 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8FCFC),
+      backgroundColor: SignupPageStyles.backgroundColor,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40),
+          padding: SignupPageStyles.pagePadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo
+              // 🔹 Logo
               Center(
                 child: Column(
                   children: [
                     Image.asset(
-                      "assets/images/app_logo.png", // 👈 replace with your logo
+                      "assets/images/app_logo.png",
                       height: 100,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      "Real-Time ASL Translation App",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.red,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
+                    Text("Real-Time ASL Translation App",
+                        style: SignupPageStyles.subtitleText),
                   ],
                 ),
               ),
 
               const SizedBox(height: 40),
 
-              // Title
-              const Align(
+              // 🔹 Title
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Register",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1f3c88),
-                  ),
-                ),
+                child: Text("Register", style: SignupPageStyles.titleText),
               ),
               const SizedBox(height: 8),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Please Register to continue.",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
+                child: Text("Please Register to continue.",
+                    style: SignupPageStyles.hintText),
               ),
 
               const SizedBox(height: 30),
 
-              // Google Button
+              // 🔹 Google Button
               SizedBox(
-                width: double.infinity, // 👈 full width
+                width: double.infinity,
                 child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: const BorderSide(color: Colors.grey),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
+                  style: SignupPageStyles.googleButton,
                   onPressed: () {},
                   icon: Image.asset(
-                    "assets/images/google_logo.png", // 👈 add Google logo in assets
+                    "assets/images/google_logo.png",
                     width: 24,
                     height: 24,
                   ),
@@ -93,7 +72,7 @@ class _SignupPageState extends State<SignupPage> {
 
               const SizedBox(height: 20),
 
-              // Divider with OR
+              // 🔹 Divider
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1)),
@@ -107,63 +86,38 @@ class _SignupPageState extends State<SignupPage> {
 
               const SizedBox(height: 20),
 
-              // Username Field
-              const Align(
+              // 🔹 Username Field
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Username",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
+                child: Text("Username", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
-                ),
-              ),
+              const TextField(decoration: SignupPageStyles.inputDecoration),
               const SizedBox(height: 20),
 
-              // Email Field
-              const Align(
+              // 🔹 Email Field
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Email",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
+                child: Text("Email", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
-                ),
-              ),
+              const TextField(decoration: SignupPageStyles.inputDecoration),
               const SizedBox(height: 20),
 
-              // Password Field
-              const Align(
+              // 🔹 Password Field
+              Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  "Password",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
+                child: Text("Password", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
               const TextField(
                 obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Color(0xFFF2F2F2), // 👈 grey background
-                ),
+                decoration: SignupPageStyles.inputDecoration,
               ),
 
               const SizedBox(height: 10),
 
-              // Remember Me
+              // 🔹 Remember Me
               Row(
                 children: [
                   Checkbox(
@@ -180,17 +134,11 @@ class _SignupPageState extends State<SignupPage> {
 
               const SizedBox(height: 20),
 
-              // Sign Up Button
+              // 🔹 Sign Up Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
+                  style: SignupPageStyles.signupButton,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Sign Up pressed")),
@@ -205,7 +153,7 @@ class _SignupPageState extends State<SignupPage> {
 
               const SizedBox(height: 15),
 
-              // Login link
+              // 🔹 Login link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

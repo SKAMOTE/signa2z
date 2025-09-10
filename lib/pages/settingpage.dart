@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../styles/settingpagestyle.dart'; // 👈 import styles
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -18,38 +19,21 @@ class _SettingPageState extends State<SettingPage> {
 
   String? selectedLanguage;
   String? selectedRegion;
-
-  bool _isPasswordVisible = false; // ✅ toggle password visibility
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3366CC),
-        title: const Text(
-          "SETTINGS",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        backgroundColor: SettingPageColors.appBarColor,
+        title: const Text("SETTINGS", style: SettingPageTextStyles.appBarTitle),
         centerTitle: true,
-
-        // ✅ Cancel button
         leading: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: const Center(
             child: Padding(
               padding: EdgeInsets.only(left: 8),
-              child: Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: Text("Cancel", style: SettingPageTextStyles.appBarCancel),
             ),
           ),
         ),
@@ -83,43 +67,40 @@ class _SettingPageState extends State<SettingPage> {
             // 🔹 Name
             TextField(
               controller: nameController,
-              decoration: _inputDecoration("Name"),
+              decoration: SettingPageInput.decoration("Name"),
             ),
             const SizedBox(height: 15),
 
             // 🔹 Email
             TextField(
               controller: emailController,
-              decoration: _inputDecoration("Email"),
+              decoration: SettingPageInput.decoration("Email"),
             ),
             const SizedBox(height: 15),
 
-            // 🔹 Password with show/hide
+            // 🔹 Password
             TextField(
               controller: passwordController,
               obscureText: !_isPasswordVisible,
-              decoration: _inputDecoration("Password").copyWith(
+              decoration: SettingPageInput.decoration("Password").copyWith(
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isPasswordVisible
                         ? Icons.visibility
                         : Icons.visibility_off,
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
+                  onPressed: () =>
+                      setState(() => _isPasswordVisible = !_isPasswordVisible),
                 ),
               ),
             ),
             const SizedBox(height: 15),
 
-            // 🔹 Date of Birth with Calendar
+            // 🔹 Date of Birth
             TextField(
               controller: dobController,
               readOnly: true,
-              decoration: _inputDecoration("Date of Birth").copyWith(
+              decoration: SettingPageInput.decoration("Date of Birth").copyWith(
                 suffixIcon: const Icon(Icons.calendar_today),
               ),
               onTap: () async {
@@ -129,7 +110,6 @@ class _SettingPageState extends State<SettingPage> {
                   firstDate: DateTime(1900),
                   lastDate: DateTime.now(),
                 );
-
                 if (pickedDate != null) {
                   setState(() {
                     dobController.text =
@@ -140,10 +120,10 @@ class _SettingPageState extends State<SettingPage> {
             ),
             const SizedBox(height: 15),
 
-            // 🔹 Language (Dropdown)
+            // 🔹 Language Dropdown
             DropdownButtonFormField<String>(
               value: selectedLanguage,
-              decoration: _inputDecoration("Language"),
+              decoration: SettingPageInput.decoration("Language"),
               items: const [
                 DropdownMenuItem(value: "English", child: Text("English")),
                 DropdownMenuItem(value: "Filipino", child: Text("Filipino")),
@@ -152,10 +132,10 @@ class _SettingPageState extends State<SettingPage> {
             ),
             const SizedBox(height: 15),
 
-            // 🔹 Country Region (Dropdown)
+            // 🔹 Region Dropdown
             DropdownButtonFormField<String>(
               value: selectedRegion,
-              decoration: _inputDecoration("Country Region"),
+              decoration: SettingPageInput.decoration("Country Region"),
               items: const [
                 DropdownMenuItem(
                     value: "Philippines", child: Text("Philippines")),
@@ -169,7 +149,6 @@ class _SettingPageState extends State<SettingPage> {
             // 🔹 Save Button
             ElevatedButton(
               onPressed: () {
-                // ✅ Save logic with Snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -184,34 +163,13 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3366CC),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                "Save Profile",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+              style: SettingPageButtons.saveButton,
+              child: const Text("Save Profile",
+                  style: SettingPageTextStyles.buttonText),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  // Reusable input decoration
-  InputDecoration _inputDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-      ),
-      filled: true,
-      fillColor: Colors.white,
     );
   }
 }

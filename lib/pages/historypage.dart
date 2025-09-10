@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart'; // ✅ import Slidable
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/custom_navbar.dart';
+import '../styles/historypagestyle.dart'; // ✅ import styles
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -13,7 +14,6 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   final TextEditingController _searchController = TextEditingController();
 
-  // 🔹 Dummy history list
   List<Map<String, String>> allHistory = [
     {"letter": "A", "time": "Aug 26, 2025 – 10:12 AM"},
     {"letter": "B", "time": "Aug 26, 2025 – 10:15 AM"},
@@ -69,12 +69,7 @@ class _HistoryPageState extends State<HistoryPage> {
       appBar: const CustomAppBar(username: "Cuti E. Patuti"),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.png"), // ✅ background image
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: HistoryDecorations.background,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -85,22 +80,13 @@ class _HistoryPageState extends State<HistoryPage> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8), // ✅ transparent white
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
+                      decoration: HistoryDecorations.searchBar,
                       child: TextField(
                         controller: _searchController,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: "Type A - Z",
-                          icon: Icon(Icons.search, color: Colors.grey),
+                          icon: Icon(Icons.search, color: HistoryColors.searchIcon),
                         ),
                       ),
                     ),
@@ -108,14 +94,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   const SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: _clearAll,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                    ),
+                    style: HistoryButtons.clearAll,
                     child: const Text("Clear All"),
                   ),
                 ],
@@ -127,10 +106,8 @@ class _HistoryPageState extends State<HistoryPage> {
               Expanded(
                 child: filteredHistory.isEmpty
                     ? const Center(
-                        child: Text(
-                          "No history found",
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
+                        child: Text("No history found",
+                            style: HistoryTextStyles.emptyHistory),
                       )
                     : ListView.builder(
                         itemCount: filteredHistory.length,
@@ -144,8 +121,8 @@ class _HistoryPageState extends State<HistoryPage> {
                               children: [
                                 SlidableAction(
                                   onPressed: (context) => _deleteItem(index),
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: HistoryColors.deleteAction,
+                                  foregroundColor: HistoryColors.deleteText,
                                   icon: Icons.delete,
                                   label: 'Delete',
                                 ),
@@ -157,16 +134,12 @@ class _HistoryPageState extends State<HistoryPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               elevation: 3,
-                              color: Colors.white.withOpacity(0.85), // ✅ semi-transparent
+                              color: Colors.white.withOpacity(0.85),
                               child: ListTile(
-                                title: Text(
-                                  "\"${item["letter"]}\"",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                subtitle: Text(item["time"]!),
+                                title: Text("\"${item["letter"]}\"",
+                                    style: HistoryTextStyles.historyTitle),
+                                subtitle: Text(item["time"]!,
+                                    style: HistoryTextStyles.historySubtitle),
                               ),
                             ),
                           );

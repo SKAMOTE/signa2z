@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart'; // 👈 import package
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/custom_navbar.dart';
+import '../styles/notificationpagestyle.dart'; // ✅ import styles
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -11,7 +12,6 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  // ✅ Notification list (dynamic so we can remove items)
   final List<Map<String, dynamic>> _notifications = [
     {"title": "Update", "time": "4:00 PM", "unread": true},
     {"title": "Update", "time": "5:46 PM", "unread": true},
@@ -28,7 +28,6 @@ class _NotificationPageState extends State<NotificationPage> {
       _notifications.removeAt(index);
     });
 
-    // Optional: Undo Snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Deleted: ${removedItem['title']}"),
@@ -47,15 +46,9 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(username: "User"),
-
+      appBar: const CustomAppBar(username: "Cuti E. Patuti"),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bg.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: notificationPageBackground, // ✅ background
         child: ListView.builder(
           padding: const EdgeInsets.all(10),
           itemCount: _notifications.length,
@@ -70,14 +63,11 @@ class _NotificationPageState extends State<NotificationPage> {
           },
         ),
       ),
-
-      // ✅ Reuse your custom navbar
       bottomNavigationBar: const CustomNavBar(currentIndex: 2),
     );
   }
 }
 
-/// 🔹 Notification Card with Slide-to-Reveal Delete
 class NotificationCard extends StatelessWidget {
   final String title;
   final String time;
@@ -96,33 +86,25 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Slidable(
       key: ValueKey(title + time),
-
-      // Swipe left to show delete
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         extentRatio: 0.25,
         children: [
           SlidableAction(
-            onPressed: (BuildContext ctx) => onDelete(),
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
+            onPressed: (ctx) => onDelete(),
+            backgroundColor: deleteButtonBackground, // ✅ style
+            foregroundColor: deleteButtonForeground, // ✅ style
+            icon: deleteButtonIcon, // ✅ style
+            label: deleteButtonLabel, // ✅ style
           ),
         ],
       ),
-
       child: Card(
-        elevation: 2,
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        elevation: notificationCardElevation, // ✅ style
+        margin: notificationCardMargin, // ✅ style
         child: ListTile(
-          leading: unread
-              ? const Icon(Icons.circle, color: Colors.red, size: 10)
-              : null,
-          title: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          leading: unread ? unreadIndicator : null, // ✅ style
+          title: Text(title, style: notificationTitleTextStyle), // ✅ style
           subtitle: Text(time),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_appbar.dart';
 import '../widgets/custom_navbar.dart';
+import '../styles/guidepagestyle.dart'; // ✅ import styles
 
 class GuidePage extends StatefulWidget {
   const GuidePage({super.key});
@@ -12,38 +13,13 @@ class GuidePage extends StatefulWidget {
 class _GuidePageState extends State<GuidePage> {
   final TextEditingController _searchController = TextEditingController();
 
-  // 🔹 Dummy ASL signs (replace with real data later)
   final List<Map<String, String>> allSigns = [
-    {
-      "letter": "A",
-      "image": "assets/images/asl_a.png",
-      "desc": "Hand Pose: Closed fist, thumb to the side"
-    },
-    {
-      "letter": "B",
-      "image": "assets/images/asl_b.png",
-      "desc": "Hand Pose: Flat hand, palm forward"
-    },
-    {
-      "letter": "C",
-      "image": "assets/images/asl_c.png",
-      "desc": "Hand Pose: Curve hand like letter C"
-    },
-    {
-      "letter": "D",
-      "image": "assets/images/asl_d.png",
-      "desc": "Hand Pose: Index up, other fingers curled"
-    },
-    {
-      "letter": "E",
-      "image": "assets/images/asl_e.png",
-      "desc": "Hand Pose: Fingers bent toward palm"
-    },
-    {
-      "letter": "F",
-      "image": "assets/images/asl_f.png",
-      "desc": "Hand Pose: Thumb and index touch"
-    },
+    {"letter": "A", "image": "assets/images/asl_a.png", "desc": "Hand Pose: Closed fist, thumb to the side"},
+    {"letter": "B", "image": "assets/images/asl_b.png", "desc": "Hand Pose: Flat hand, palm forward"},
+    {"letter": "C", "image": "assets/images/asl_c.png", "desc": "Hand Pose: Curve hand like letter C"},
+    {"letter": "D", "image": "assets/images/asl_d.png", "desc": "Hand Pose: Index up, other fingers curled"},
+    {"letter": "E", "image": "assets/images/asl_e.png", "desc": "Hand Pose: Fingers bent toward palm"},
+    {"letter": "F", "image": "assets/images/asl_f.png", "desc": "Hand Pose: Thumb and index touch"},
   ];
 
   List<Map<String, String>> filteredSigns = [];
@@ -60,14 +36,12 @@ class _GuidePageState extends State<GuidePage> {
 
   void _filterSigns(String query) {
     setState(() {
-      if (query.isEmpty) {
-        filteredSigns = List.from(allSigns);
-      } else {
-        filteredSigns = allSigns
-            .where((sign) =>
-                sign["letter"]!.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+      filteredSigns = query.isEmpty
+          ? List.from(allSigns)
+          : allSigns
+              .where((sign) =>
+                  sign["letter"]!.toLowerCase().contains(query.toLowerCase()))
+              .toList();
     });
   }
 
@@ -77,12 +51,7 @@ class _GuidePageState extends State<GuidePage> {
       appBar: const CustomAppBar(username: "Cuti E. Patuti"),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/bg_guide.png"), // 👈 background
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: guidePageBackground, // ✅ use style
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -90,16 +59,7 @@ class _GuidePageState extends State<GuidePage> {
               // 🔹 Search bar
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
+                decoration: searchBarDecoration, // ✅ use style
                 child: TextField(
                   controller: _searchController,
                   decoration: const InputDecoration(
@@ -115,16 +75,12 @@ class _GuidePageState extends State<GuidePage> {
               Expanded(
                 child: filteredSigns.isEmpty
                     ? const Center(
-                        child: Text(
-                          "No results found",
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
-                        ),
+                        child: Text("No results found", style: noResultsTextStyle), // ✅ style
                       )
                     : GridView.builder(
                         itemCount: filteredSigns.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // 2 cards per row
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                           childAspectRatio: 0.75,
@@ -150,54 +106,24 @@ class _GuidePageState extends State<GuidePage> {
   // 🔹 ASL Card Widget
   Widget _aslCard(String letter, String imagePath, String desc) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: aslCardShape, // ✅ style
       elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "\"$letter\"",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+            Text("\"$letter\"", style: aslLetterTextStyle), // ✅ style
             const SizedBox(height: 8),
-            Expanded(
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
-              ),
-            ),
+            Expanded(child: Image.asset(imagePath, fit: BoxFit.contain)),
             const SizedBox(height: 8),
-            Text(
-              desc,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, color: Colors.black87),
-            ),
+            Text(desc, textAlign: TextAlign.center, style: aslDescTextStyle), // ✅ style
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    minimumSize: const Size(60, 30),
-                  ),
-                  onPressed: () {},
-                  child: const Text("Watch"),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    minimumSize: const Size(60, 30),
-                  ),
-                  onPressed: () {},
-                  child: const Text("Practice"),
-                ),
+                ElevatedButton(onPressed: () {}, style: watchButtonStyle, child: const Text("Watch")), // ✅ style
+                ElevatedButton(onPressed: () {}, style: practiceButtonStyle, child: const Text("Practice")), // ✅ style
               ],
             ),
           ],
