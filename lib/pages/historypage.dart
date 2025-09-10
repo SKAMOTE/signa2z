@@ -71,7 +71,7 @@ class _HistoryPageState extends State<HistoryPage> {
         width: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/bg_history.png"),
+            image: AssetImage("assets/images/background.png"), // ✅ background image
             fit: BoxFit.cover,
           ),
         ),
@@ -86,11 +86,11 @@ class _HistoryPageState extends State<HistoryPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.white.withOpacity(0.8), // ✅ transparent white
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withOpacity(0.15),
                             blurRadius: 4,
                           ),
                         ],
@@ -156,7 +156,8 @@ class _HistoryPageState extends State<HistoryPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              elevation: 2,
+                              elevation: 3,
+                              color: Colors.white.withOpacity(0.85), // ✅ semi-transparent
                               child: ListTile(
                                 title: Text(
                                   "\"${item["letter"]}\"",
