@@ -129,14 +129,21 @@ class _HomepageState extends State<Homepage> {
 
             const SizedBox(height: 20),
 
-            // 🔹 Recent Transitions
+            // 🔹 Recent Transitions Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("Recent Transitions", style: HomeTextStyles.sectionTitle),
-                  Text("View all", style: HomeTextStyles.sectionAction),
+                children: [
+                  const Text("Recent Transitions", style: HomeTextStyles.sectionTitle),
+
+                  // 👇 Make "View all" clickable
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/history");
+                    },
+                    child: const Text("View all", style: HomeTextStyles.sectionAction),
+                  ),
                 ],
               ),
             ),
