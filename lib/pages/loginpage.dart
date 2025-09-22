@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:signa2z/pages/homepage.dart';
 import '../styles/loginpagestyle.dart'; // 👈 import styles
 
@@ -11,6 +14,97 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool rememberMe = false;
+
+  // ✅ Controllers for input
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+
+  // =========================
+  // Email/Password Login
+  // =========================
+  Future<void> _login() async {
+    setState(() => _isLoading = true);
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim());
+
+      await _postSignIn(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // =========================
+  // Google Sign-In
+  // =========================
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      // Instantiate GoogleSignIn
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        // User canceled
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      // Obtain auth details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create Firebase credential
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      // Sign in with Firebase
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Common post sign-in logic
+      await _postSignIn(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // =========================
+  // Common post sign-in logic
+  // =========================
+  Future<void> _postSignIn(User? user) async {
+    if (user != null) {
+      // Check Firestore profile
+      DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+          "email": user.email,
+          "createdAt": FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Navigate to Homepage
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Homepage()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +132,9 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 40),
 
-              // 🔹 Title
+              // 🔹 Login header
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Login", style: LoginPageStyles.titleText),
@@ -52,36 +145,35 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text("Please login to continue.",
                     style: LoginPageStyles.hintText),
               ),
-
               const SizedBox(height: 30),
 
               // 🔹 Email
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Email or Username",
-                    style: LoginPageStyles.labelText),
+                child:
+                    Text("Email or Username", style: LoginPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Color(0xFFF2F2F2),
                 ),
               ),
-
               const SizedBox(height: 20),
 
               // 🔹 Password
               Align(
                 alignment: Alignment.centerLeft,
-                child:
-                    Text("Password", style: LoginPageStyles.labelText),
+                child: Text("Password", style: LoginPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(
+              TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor: Color(0xFFF2F2F2),
@@ -89,8 +181,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(height: 10),
-
-              // 🔹 Remember Me
               Row(
                 children: [
                   Checkbox(
@@ -106,8 +196,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(height: 10),
-
-              // 🔹 Divider
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1)),
@@ -118,15 +206,14 @@ class _LoginPageState extends State<LoginPage> {
                   Expanded(child: Divider(thickness: 1)),
                 ],
               ),
-
               const SizedBox(height: 20),
 
-              // 🔹 Google Button
+              // 🔹 Google Sign-In Button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   style: LoginPageStyles.googleButton,
-                  onPressed: () {},
+                  onPressed: _signInWithGoogle,
                   icon: Image.asset(
                     "assets/images/google_logo.png",
                     width: 24,
@@ -139,29 +226,22 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 25),
 
-              // 🔹 Login button
+              // 🔹 Email/Password Login Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: LoginPageStyles.loginButton,
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Log In",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
+                  onPressed: _isLoading ? null : _login,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Log In",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                 ),
               ),
 
               const SizedBox(height: 15),
-
-              // 🔹 Forgot Password
               TextButton(
                 onPressed: () {},
                 child: const Text(
@@ -169,10 +249,8 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
-
               const SizedBox(height: 10),
 
-              // 🔹 Signup link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

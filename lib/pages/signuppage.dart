@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:signa2z/pages/homepage.dart';
 import '../styles/signuppagestyle.dart'; // 👈 import styles
 
 class SignupPage extends StatefulWidget {
@@ -10,6 +14,92 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   bool rememberMe = false;
+  bool _isLoading = false;
+
+  // ✅ Controllers for input
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // =========================
+  // Common post sign-in logic
+  // =========================
+  Future<void> _postSignIn(User? user) async {
+    if (user != null) {
+      // Check Firestore profile
+      DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
+          "username": _usernameController.text.trim(),
+          "email": user.email,
+          "createdAt": FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Navigate to Homepage
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Homepage()));
+    }
+  }
+
+  // =========================
+  // Email/Password Sign-Up
+  // =========================
+  Future<void> _signUp() async {
+    setState(() => _isLoading = true);
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      await _postSignIn(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // =========================
+  // Google Sign-In
+  // =========================
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        setState(() => _isLoading = false);
+        return; // User canceled
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      await _postSignIn(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,16 +147,18 @@ class _SignupPageState extends State<SignupPage> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   style: SignupPageStyles.googleButton,
-                  onPressed: () {},
+                  onPressed: _signInWithGoogle,
                   icon: Image.asset(
                     "assets/images/google_logo.png",
                     width: 24,
                     height: 24,
                   ),
-                  label: const Text(
-                    "Sign in with Google",
-                    style: TextStyle(color: Colors.black87, fontSize: 14),
-                  ),
+                  label: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                          "Sign in with Google",
+                          style: TextStyle(color: Colors.black87, fontSize: 14),
+                        ),
                 ),
               ),
 
@@ -92,7 +184,9 @@ class _SignupPageState extends State<SignupPage> {
                 child: Text("Username", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(decoration: SignupPageStyles.inputDecoration),
+              TextField(
+                  controller: _usernameController,
+                  decoration: SignupPageStyles.inputDecoration),
               const SizedBox(height: 20),
 
               // 🔹 Email Field
@@ -101,7 +195,9 @@ class _SignupPageState extends State<SignupPage> {
                 child: Text("Email", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(decoration: SignupPageStyles.inputDecoration),
+              TextField(
+                  controller: _emailController,
+                  decoration: SignupPageStyles.inputDecoration),
               const SizedBox(height: 20),
 
               // 🔹 Password Field
@@ -110,10 +206,10 @@ class _SignupPageState extends State<SignupPage> {
                 child: Text("Password", style: SignupPageStyles.labelText),
               ),
               const SizedBox(height: 6),
-              const TextField(
-                obscureText: true,
-                decoration: SignupPageStyles.inputDecoration,
-              ),
+              TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: SignupPageStyles.inputDecoration),
 
               const SizedBox(height: 10),
 
@@ -139,15 +235,13 @@ class _SignupPageState extends State<SignupPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: SignupPageStyles.signupButton,
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Sign Up pressed")),
-                    );
-                  },
-                  child: const Text(
-                    "Sign Up",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
+                  onPressed: _isLoading ? null : _signUp,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Sign Up",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                 ),
               ),
 
