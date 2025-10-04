@@ -68,21 +68,51 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
           onSelected: (value) {
             if (value == 1) {
-              // ✅ Navigate to Settings Page
+              // ✅ Slide animation to Settings Page
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingPage(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const SettingPage(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0); // slide from right
+                    const end = Offset.zero;
+                    const curve = Curves.easeOut;
+
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
                 ),
               );
             } else if (value == 2) {
               // TODO: Navigate to Theme
             } else if (value == 3) {
-              // ✅ Navigate to Notification Page
+              // ✅ Slide animation to Notification Page
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const NotificationPage(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const NotificationPage(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(1.0, 0.0);
+                    const end = Offset.zero;
+                    const curve = Curves.easeOut;
+
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
                 ),
               );
             } else if (value == 4) {

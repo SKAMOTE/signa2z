@@ -100,9 +100,27 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
 
-      // Navigate to Homepage
+      // ✅ Navigate to Homepage with slide transition
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Homepage()));
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const Homepage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0); // start offscreen right
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ),
+      );
     }
   }
 
@@ -226,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 25),
 
-              // 🔹 Email/Password Login Button
+              // 🔹 Email/Password Login Button (log in)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

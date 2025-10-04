@@ -30,9 +30,25 @@ class CustomNavBar extends StatelessWidget {
         page = const Homepage();
     }
 
+    // ✅ Slide-up animation transition
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => page),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0); // start from bottom
+          const end = Offset.zero; // end at normal position
+          const curve = Curves.easeOut;
+
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
     );
   }
 
